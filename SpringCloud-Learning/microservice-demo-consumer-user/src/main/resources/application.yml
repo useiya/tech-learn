@@ -1,0 +1,24 @@
+server:
+  port: 8100
+
+eureka:
+ client:
+   healthcheck:
+     enabled: true
+   service-url:
+     defaultZone: http://libo:libo@erk-node1:9000/eureka,http://libo:libo@erk-node2:9001/eureka
+ instance:
+   prefer-ip-address: true
+spring:
+  application:
+    name: microservice-demo-consumer-user
+
+# Feign 做客户端，Hystrix 熔断，Fallback不回调的 加上以下配置
+feign:
+  hystrix:
+    enabled: true
+
+# 关闭 基础  认证 否则 hytrix dashboard 获取不到数据
+security:
+  basic:
+    enabled: false

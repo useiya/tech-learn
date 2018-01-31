@@ -1,0 +1,18 @@
+server:
+  port: 8200
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://libo:libo@erk-node1:9000/eureka,http://libo:libo@erk-node2:9001/eureka
+  instance:
+    prefer-ip-address: true
+
+spring:
+  application:
+    name: microservice-hystrix-monitor
+
+turbine:
+  app-config: MICROSEVICE-DEMO-CONSUMER-USER

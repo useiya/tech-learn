@@ -1,0 +1,56 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: microservice-demo-provider-user
+  profiles: node1
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    platform: h2
+    schema: classpath:sql/user-schema.sql
+    data: classpath:sql/user-data.sql
+logging:
+  level:
+    root: info
+    org.hibernate: info
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://libo:libo@erk-node1:9000/eureka,http://libo:libo@erk-node2:9001/eureka
+  instance:
+    prefer-ip-address: true
+
+---
+server:
+  port: 8001
+spring:
+  profiles: node2
+  application:
+    name: microservice-demo-provider-user
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    platform: h2
+    schema: classpath:sql/user-schema.sql
+    data: classpath:sql/user-data.sql
+logging:
+  level:
+    root: info
+    org.hibernate: info
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://libo:libo@erk-node1:9000/eureka,http://libo:libo@erk-node2:9001/eureka
+  instance:
+    prefer-ip-address: true

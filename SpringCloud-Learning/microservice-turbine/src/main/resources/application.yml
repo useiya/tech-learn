@@ -1,0 +1,21 @@
+server:
+  port: 8201
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://libo:libo@erk-node1:9000/eureka,http://libo:libo@erk-node2:9001/eureka
+  instance:
+    prefer-ip-address: true
+
+spring:
+  application:
+    name: microservice-turbine
+
+turbine:
+  app-config: microsevice-demo-consumer-user,microservice-demo-provider-user
+  aggregator:
+    cluster-config: default
+  cluster-name-expression: new String("default")

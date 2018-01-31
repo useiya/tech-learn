@@ -1,0 +1,49 @@
+
+spring:
+  application:
+    name: microservice-discovery-eureka-ha
+security:
+  basic:
+    enabled: true
+  user:
+    name: libo
+    password: libo
+
+management:
+  context-path: /admin
+
+---
+server:
+  port: 9000
+spring:
+  profiles: erk-node1
+eureka:
+  instance:
+    hostname: erk-node1
+    instance-id: ${spring.application.name}:${server.port}
+    lease-renewal-interval-in-seconds: 5          # 心跳时间，即服务续约间隔时间（缺省为30s）
+    lease-expiration-duration-in-seconds: 15      # 发呆时间，即服务续约到期时间（缺省为90s）
+
+  client:
+    # 是否注册到eureka
+    register-with-eureka: true
+    # 是否从Eureka Server 获取信息
+    fetch-registry: true
+    service-url:
+      defaultZone: http://libo:libo@erk-node2:9001/eureka
+---
+server:
+  port: 9001
+spring:
+  profiles: erk-node2
+eureka:
+  instance:
+    hostname: erk-node2
+    instance-id: ${spring.application.name}:${server.port}
+    lease-renewal-interval-in-seconds: 5          # 心跳时间，即服务续约间隔时间（缺省为30s）
+    lease-expiration-duration-in-seconds: 15      # 发呆时间，即服务续约到期时间（缺省为90s）
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://libo:libo@erk-node1:9000/eureka

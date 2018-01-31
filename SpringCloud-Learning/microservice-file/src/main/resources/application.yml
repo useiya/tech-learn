@@ -1,0 +1,19 @@
+server:
+  port: 8200
+
+eureka:
+ client:
+   healthcheck:
+     enabled: true
+   service-url:
+     defaultZone: http://libo:libo@erk-node1:9000/eureka,http://libo:libo@erk-node2:9001/eureka
+ instance:
+   prefer-ip-address: true
+spring:
+  application:
+    name: microservice-file
+
+http:
+  multipart:
+    max-file-size: 2000Mb
+    max-request-size: 2500Mb

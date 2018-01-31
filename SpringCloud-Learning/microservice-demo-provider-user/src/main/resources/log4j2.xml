@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 设置log4j2的自身log级别为warn ; OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!-- monitorInterval="30"表示每30秒配置文件会动态加载一次。在程序运行过程中，如果修改配置文件，程序会随之改变 -->
+<!-- [%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level %logger{0} [%file:%line]:%L - %msg%n-->
+<configuration status="DEBUG">
+    <Properties>
+            <property name="LOG_HOME">/home/dibu/logs</property>
+            <property name="LOG_PATTERN">[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%p] - %l - %m%n</property>
+            <property name="LOG_POLICY_SIZE">100M</property>
+    </Properties>
+    <appenders>
+        <console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </console>
+
+        <!-- INFO -->
+        <RollingFile name="DIBU-INFO" fileName="${LOG_HOME}/DIBU-INFO.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
+            <!--控制台只输出level及以上级别的信息(onMatch)，其他的直接拒绝（onMismatch）-->
+            <Filters>
+                <ThresholdFilter level="INFO"/>
+                <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <!--<SizeBasedTriggeringPolicy size="100 MB"/>-->
+                <SizeBasedTriggeringPolicy size="${LOG_POLICY_SIZE}"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- ERROR -->
+        <RollingFile name="DIBU-ERROR" fileName="${LOG_HOME}/DIBU-ERROR.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="ERROR"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${LOG_POLICY_SIZE}"/>
+            </Policies>
+        </RollingFile>
+
+      <!-- DIBU-SERVICE-MONITOR-->
+      <RollingFile name="DIBU-SERVICE-MONITOR" fileName="${LOG_HOME}/DIBU-SERVICE-MONITOR.log"
+        filePattern="${LOG_HOME}/$${date:yyyy-MM}/service-monitor-%d{yyyy-MM-dd}-%i.log">
+        <Filters>
+          <ThresholdFilter level="WARN"/>
+          <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
+        </Filters>
+        <PatternLayout pattern="${LOG_PATTERN}"/>
+        <Policies>
+          <TimeBasedTriggeringPolicy/>
+          <SizeBasedTriggeringPolicy size="${LOG_POLICY_SIZE}"/>
+        </Policies>
+      </RollingFile>
+
+      <Async name="dibu-async">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="DIBU-INFO"/>
+        <appender-ref ref="DIBU-ERROR"/>
+        <appender-ref ref="DIBU-SERVICE-MONITOR"/>
+      </Async>
+    </appenders>
+
+    <loggers>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <logger name="org.springframework" level="INFO"></logger>
+        <logger name="org.mybatis" level="INFO"></logger>
+        <logger name="java.sql.Statement" level="INFO"></logger>
+        <logger name="org.apache.kafka" level="INFO"></logger>
+
+        <!-- 自定义 LOGGER 代码中可直接指定 这里的 name 会与root 定义的冲突 重复打印 -->
+        <!--<logger name="TST_INFO" level="INFO">
+            <appender-ref ref="RollingFileInfo"/>
+        </logger>-->
+        <root level="INFO">
+            <appender-ref ref="dibu-async"/>
+        </root>
+    </loggers>
+
+</configuration>

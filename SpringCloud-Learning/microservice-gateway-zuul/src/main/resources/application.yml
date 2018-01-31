@@ -1,0 +1,27 @@
+server:
+  port: 9100
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://libo:libo@erk-node1:9000/eureka,http://libo:libo@erk-node2:9001/eureka
+  instance:
+    prefer-ip-address: true
+spring:
+  application:
+    name: microsevice-gateway-zuul
+zuul:
+  # ignored-services: "*" # 忽略所有的有服务
+  routes:
+    microservice-demo-provider-user:
+      path: /provider/**
+      sensitive-headers: Cookie
+    microservice-demo-consumer-user:
+      path: /consumer/**
+      sensitive-headers: Cookie
+
+ribbon:
+  ConnectionTimeOut: 3000
+  ReadTimeOut: 60000
