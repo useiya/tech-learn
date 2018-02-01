@@ -1,4 +1,4 @@
-package cc.seiya.java.concurrency.thread;
+package cc.seiya.java.concurrency.thread.base;
 
 /**
  * 继承方式实现多线程

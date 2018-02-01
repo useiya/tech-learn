@@ -1,4 +1,4 @@
-package cc.seiya.java.concurrency.thread;
+package cc.seiya.java.concurrency.thread.base;
 
 import java.util.concurrent.*;
 
