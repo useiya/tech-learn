@@ -34,8 +34,7 @@ class MainThread implements Runnable {
             for (int i = 1; i < 100; i += 2) {
                 System.out.println(name + " print  odd number :" + i);
                 try {
-                    Thread.yield();
-                    TimeUnit.MILLISECONDS.sleep(1000);
+                    lock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -59,11 +58,11 @@ class SubThread implements Runnable {
             for (int i = 2; i < 100; i += 2) {
                 try {
                     System.err.println(name + " print even number :" + i);
-                    Thread.yield();
                     TimeUnit.MILLISECONDS.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                lock.notify();
             }
         }
     }
