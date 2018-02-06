@@ -19,66 +19,65 @@ public class ThreadAlternation {
 
 //        TimeUnit.MILLISECONDS.sleep(1000);
     }
-}
 
-/**
- * main thread print odd number
- */
-class MainThread implements Runnable {
+    /**
+     * main thread print odd number
+     */
+    private static class MainThread implements Runnable {
 
-    private String threadName = "main-thread";
+        private String threadName = "main-thread";
 
-    private Object lock;
+        private Object lock;
 
-    public MainThread(Object lock) {
-        this.lock = lock;
+        public MainThread(Object lock) {
+            this.lock = lock;
+        }
+
+        public void run() {
+            synchronized (lock) {
+                for (int i = 1; i < 100; i += 2) {
+                    System.out.println(threadName + "print:" + i);
+                    try {
+                        lock.wait();
+                        TimeUnit.MILLISECONDS.sleep(10);
+                        lock.notifyAll();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
     }
 
-    public void run() {
-        synchronized (lock) {
-            for (int i = 1; i < 100; i += 2) {
-                System.out.println(threadName + "print:" + i);
-                try {
-                    lock.wait();
-                    TimeUnit.MILLISECONDS.sleep(10);
-                    lock.notifyAll();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+    /**
+     * sub thread print even number
+     */
+    private static class SubThread implements Runnable {
+
+        private String threadName = "sub-thread";
+
+        private Object lock;
+
+        public SubThread(Object lock) {
+            this.lock = lock;
+        }
+
+        public void run() {
+            synchronized (lock) {
+                for (int i = 2; i < 100; i += 2) {
+                    System.out.println(threadName + " print:" + i);
+                    try {
+                        lock.notifyAll();
+                        TimeUnit.MILLISECONDS.sleep(10);
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
-
 }
 
-/**
- * sub thread print even number
- */
-class SubThread implements Runnable {
 
-    private String threadName = "sub-thread";
-
-    private Object lock;
-
-    public SubThread(Object lock) {
-        this.lock = lock;
-    }
-
-
-    public void run() {
-        synchronized (lock) {
-            for (int i = 2; i < 100; i += 2) {
-                System.out.println(threadName + " print:" + i);
-                try {
-                    lock.notifyAll();
-                    TimeUnit.MILLISECONDS.sleep(10);
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-
-}
